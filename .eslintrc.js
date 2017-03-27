@@ -37,5 +37,13 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     // 文末新行
     'eol-last': 0,
+    // 末尾逗号
+    'comma-dangle': 0,
+    // 全局引入资源
+    'global-require': 0,
+    // \r\n和\n
+    'linebreak-style': 0,
+    // return;命令
+    'no-useless-return': 0,
   }
 }

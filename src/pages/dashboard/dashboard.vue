@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <p>这里特喵的是首页</p>
+    <router-view></router-view>
   </div>
 </template>
 
