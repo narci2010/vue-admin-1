@@ -24,7 +24,7 @@
       <div class="db-body">
         <aside class="db-menu-wrapper">
           <el-menu :default-active="activeMenu" class="db-menu-bar" router>
-            <el-menu-item index="/list">
+            <el-menu-item index="/manage">
               <i class="el-icon-document"></i>管理
             </el-menu-item>
             <el-menu-item index="/form">
@@ -33,10 +33,10 @@
             <el-menu-item index="/chart">
               <i class="el-icon-picture"></i>图表
             </el-menu-item>
-            <el-submenu>
+            <el-submenu index="/manage">
               <template slot="title"><i class="el-icon-setting"></i>用户管理</template>
               <el-menu-item index="/manage/detail">详情</el-menu-item>
-              <el-menu-item index="/manage/list">列表</el-menu-item>
+              <el-menu-item index="/manage">列表</el-menu-item>
             </el-submenu>
           </el-menu>
         </aside>

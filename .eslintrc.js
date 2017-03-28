@@ -45,5 +45,19 @@ module.exports = {
     'linebreak-style': 0,
     // return;命令
     'no-useless-return': 0,
+    // console.log
+    'no-console': 0,
+    // const let
+    // 'prefer-const': 0,
+    // es6变量简写语法
+    // 'object-shorthand': 0,
+    // 箭头函数参数是否需要括号
+    // 'arrow-parens': 0,
+    // 箭头函数返回值不用代码块return
+    // 'arrow-body-style': 0,
+    // 模版变量花括号内不允许有空格
+    // 'template-curly-spacing': 0,
+    // 对象花括号内要有空格
+    // 'object-curly-spacing': 0,
   }
 }

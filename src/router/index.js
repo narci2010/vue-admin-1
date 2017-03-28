@@ -35,6 +35,7 @@ export default new Router({
     {
       path: '/',
       component: root,
+      name: '首页',
       meta: {
         requiresAuth: true
       },
@@ -52,13 +53,14 @@ export default new Router({
         {
           path: 'manage',
           component: root,
+          name: '管理',
           meta: {
             hidden: false
           },
           children: [
             {
-              path: 'list',
-              name: 'List',
+              path: '',
+              name: '列表',
               component: List,
             },
             {
