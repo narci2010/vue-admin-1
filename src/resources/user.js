@@ -18,8 +18,9 @@ for (let i = 0; i < userCount; i++) {
     name: Mock.Random.cname(),
     address: Mock.mock('@county(true)'),
     'age|18-60': 1,
-    date: Mock.Random.date('yyyy-MM-dd HH:mm:ss'),
-    modifydate: Mock.Random.now('day', 'yyyy-MM-dd HH:mm:ss')
+    // date: Mock.Random.date('yyyy-MM-dd HH:mm:ss'),
+    date: Number(Mock.Random.datetime('T')),
+    modifydate: Number(new Date().getTime())
   }));
 }
 

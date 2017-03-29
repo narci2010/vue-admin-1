@@ -40,8 +40,8 @@
         <el-table-column label="姓名" prop="name" width="100"></el-table-column>
         <el-table-column label="年龄" prop="age" sortable="custom" width="100"></el-table-column>
         <el-table-column label="地址" prop="address" min-width="200"></el-table-column>
-        <el-table-column label="出生日期" prop="date" width="180"></el-table-column>
-        <el-table-column label="修改时间" prop="modifydate" min-width="120"></el-table-column>
+        <el-table-column label="出生日期" prop="date" :formatter="formatDate" width="180"></el-table-column>
+        <el-table-column label="修改时间" prop="modifydate" :formatter="formatDateTime" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template scope="scope">
             <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -89,28 +89,6 @@
         </span>
       </el-dialog>
       <!-- edit dialog end -->
-
-      <!-- create dialog start -->
-      <!-- <el-dialog title="保存" v-model="createDialog" size="tiny">
-        <el-form ref="createFrom" :model="createForm" label-width="80px" label-position="left">
-          <el-form-item label="姓名">
-            <el-input v-model="createForm.name" class="el-col-24"></el-input>
-          </el-form-item>
-          <el-form-item label="出生日期">
-            <el-date-picker class="el-col-24" type="datetime" placeholder="选择日期时间"
-              v-model="createForm.time" style="width: 100%;">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="地址">
-            <el-input v-model="createForm.address" class="el-col-24"></el-input>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="createDialog = false">取 消</el-button>
-          <el-button type="primary" @click="handleSave()">确 定</el-button>
-        </span>
-      </el-dialog> -->
-      <!-- create dialog end -->
     </div>
   </div>
 </template>
@@ -122,6 +100,7 @@ import {
   removeUser,
   editUser
 } from './../../api/api';
+import Formatter from '../../utils/date-formatter';
 
 export default {
   data() {
@@ -134,7 +113,6 @@ export default {
       multipleSelection: [], // 多选
       reserveSelection: false,
       editDialog: false,
-      // createDialog: false,
       filters: {
         sortWay: '',
         userName: '',
@@ -161,9 +139,11 @@ export default {
   },
 
   methods: {
-    // 格式化日期
     formatDate(row) {
-      return new Date(row.date).toLocaleDateString();
+      return Formatter.format(row.date, 'yyyy-MM-dd');
+    },
+    formatDateTime(row) {
+      return Formatter.format(row.modifydate, 'yyyy-MM-dd hh:mm:ss');
     },
     // 排序
     handleSortChange(sortWay) {
@@ -174,26 +154,33 @@ export default {
       };
       // this.fetchData();
     },
-    // 新增/编辑
+    // 重置表单
+    resetForm() {
+      this.editForm.id = '';
+      this.editForm.name = '';
+      this.editForm.address = '';
+      this.editForm.age = '';
+      this.editForm.date = '';
+    },
+    // 新增/编辑的保存
     handleSave() {
       if (!this.editForm.id) {
         addUser(this.editForm).then(() => {
           this.fetchData();
           // 隐藏表单
           this.editDialog = false;
-          // 重置表单
-          this.$refs.editForm.resetFields();
+          this.resetForm();
           this.$message({
             message: '新增成功',
             type: 'success'
           });
         });
       } else {
+        console.log(this.editForm);
         editUser(this.editForm).then(() => {
-          this.editDialog.modifydate = new Date();
           this.fetchData();
           this.editDialog = false;
-          this.$refs.editForm.resetFields();
+          this.resetForm();
           this.$message({
             message: '编辑成功',
             type: 'success'
@@ -204,11 +191,7 @@ export default {
     // 打开新增
     handleCreate() {
       // 重置表单
-      this.editForm.id = '';
-      this.editForm.name = '';
-      this.editForm.address = '';
-      this.editForm.age = '';
-      this.editForm.date = '';
+      this.resetForm();
       // 显示dialog
       this.editDialog = true;
     },

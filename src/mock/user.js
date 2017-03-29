@@ -1,12 +1,13 @@
 /* eslint-disable */
 import Mock from 'mockjs';
 import { Users } from '../resources/user';
+
 let _Users = Users;
 
 export default {
   // 通过filter实现数据查询
-  list: config => {
-    let {pageNo, pageSize, sortWay, startTime, endTime, userName, age} = config.params;
+  list: params => {
+    let { pageNo, pageSize, age, address, date, modifydate, sortWay, startTime, endTime, userName } = params;
     let mockUsers = _Users.filter(user => {
       if (startTime && user.date < startTime) return false;
       if (endTime && user.date > endTime) return false;
@@ -30,13 +31,14 @@ export default {
     });
   },
   add: config => {
-    let { name, address, age, time } = JSON.parse(config.data);
+    let { name, address, age, date } = JSON.parse(config.data);
     _Users.push({
       id: Mock.Random.guid(),
       name,
       address,
       age,
-      date: new Date(time).getTime()
+      date: new Date(date).getTime(),
+      modifydate: new Date().getTime()
     });
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -60,13 +62,14 @@ export default {
     });
   },
   edit: config => {
-    let { id, name, address, age, time } = JSON.parse(config.data);
+    let { id, name, address, age, date } = JSON.parse(config.data);
     _Users.some(u => {
       if (u.id === id) {
         u.name = name || u.name;
         u.address = address || u.address;
         u.age = age || u.age;
-        u.date = time ? new Date(time).getTime() : u.date;
+        u.date = date ? new Date(date).getTime() : u.date;
+        u.modifydate = new Date().getTime();
         return true;
       }
     });
