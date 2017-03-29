@@ -6,7 +6,7 @@ let _Users = Users;
 export default {
   // 通过filter实现数据查询
   list: config => {
-    let {page, sortWay, startTime, endTime, userName, age} = config.params;
+    let {pageNo, pageSize, sortWay, startTime, endTime, userName, age} = config.params;
     let mockUsers = _Users.filter(user => {
       if (startTime && user.date < startTime) return false;
       if (endTime && user.date > endTime) return false;
@@ -18,8 +18,8 @@ export default {
       let {order, prop} = sortWay;
       mockUsers = mockUsers.sort((u1, u2) => order === 'ascending' ? u1[prop] - u2[prop] : u2[prop] - u1[prop]);
     }
-    if (page === 0) page++;
-    mockUsers = mockUsers.filter((u, index) => index < 20 * page && index >= 20 * (page - 1));
+    if (pageNo === 0) pageNo++;
+    mockUsers = mockUsers.filter((u, index) => index < pageSize * pageNo && index >= pageSize * (pageNo - 1));
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve([200, {

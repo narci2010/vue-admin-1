@@ -1,5 +1,5 @@
 <template lang="html">
-  <div id="ListWithFiltersPage">
+  <div class="list-with-filter">
 
     <!-- breadcrumb start  -->
     <db-breadcrumb></db-breadcrumb>
@@ -14,7 +14,8 @@
             <el-option
                 v-for="item in selectedOptions"
                 :label="item.label"
-                :value="item.value">
+                :value="item.value"
+                :key="item.value">
             </el-option>
           </el-select>
           <el-input placeholder="请输入年龄" v-model="filters.age" v-show="filters.labelVal == '1'"></el-input>
@@ -25,26 +26,27 @@
           <el-date-picker type="datetimerange" placeholder="选择时间范围" style="width:350px" v-model="filters.startEndTime"></el-date-picker>
         </div>
         <el-button type="primary" @click="handleSearch()">搜索</el-button>
-        <el-button type="primary" @click="createDialog = true">创建</el-button>
+        <el-button type="primary" @click="handleCreate()">创建</el-button>
       </div>
       <!-- filters end -->
 
       <!-- table start  -->
       <el-table :data="users" ref="table" style="width: 100%" element-loading-text="拼命加载中"
-        stripe
         v-loading="loading"
+        border
         @selection-change="handleSelectionChange"
         @sort-change="handleSortChange">
         <el-table-column type="selection" width="55" :reserve-selection="reserveSelection"></el-table-column>
-        <el-table-column prop="date" label="出生日期" :formatter="formatDate" width="180"></el-table-column>
-        <el-table-column prop="name" label="姓名"></el-table-column>
-        <el-table-column prop="age" sortable="custom" label="年龄"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
-        <el-table-column :context="_self" width="150" inline-template label="操作">
-          <div>
-            <el-button size="small" @click="handleEdit($index, row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete($index, row)">删除</el-button>
-          </div>
+        <el-table-column label="姓名" prop="name" width="100"></el-table-column>
+        <el-table-column label="年龄" prop="age" sortable="custom" width="100"></el-table-column>
+        <el-table-column label="地址" prop="address" min-width="200"></el-table-column>
+        <el-table-column label="出生日期" prop="date" width="180"></el-table-column>
+        <el-table-column label="修改时间" prop="modifydate" min-width="120"></el-table-column>
+        <el-table-column label="操作" min-width="120">
+          <template scope="scope">
+            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <!-- table end  -->
@@ -54,49 +56,49 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="1"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
+          :current-page="pageNo"
+          :page-sizes="[20, 50, 100, 200]"
+          :page-size="pageSize"
+          :total="total"
+          layout="total, sizes, prev, pager, next, jumper">
         </el-pagination>
-
-        <!-- <el-pagination
-          layout="prev, pager, next"
-          @current-change="handleCurrentChange"
-          :page-size="20">
-        </el-pagination> -->
       </div>
       <!-- pagination end  -->
 
       <!-- edit dialog start -->
       <el-dialog title="编辑" v-model="editDialog" size="tiny">
-        <el-form ref="editForm" :model="editForm" label-width="80px">
+        <el-form ref="editForm" :model="editForm" label-width="80px" label-position="left">
           <el-form-item label="姓名">
             <el-input v-model="editForm.name" class="el-col-24"></el-input>
           </el-form-item>
+          <el-form-item label="年龄">
+            <el-input v-model="editForm.age" class="el-col-24"></el-input>
+          </el-form-item>
+          <el-form-item label="地址">
+            <el-input v-model="editForm.address" class="el-col-24"></el-input>
+          </el-form-item>
           <el-form-item label="出生日期">
             <el-date-picker class="el-col-24" type="datetime" placeholder="选择日期时间"
-              v-model="editForm.time">
+              v-model="editForm.date" style="width: 100%;">
             </el-date-picker>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="editDialog = false">取 消</el-button>
-          <el-button type="primary" @click="handleEditSave()">确 定</el-button>
+          <el-button type="primary" @click="handleSave()">确 定</el-button>
         </span>
       </el-dialog>
       <!-- edit dialog end -->
 
       <!-- create dialog start -->
-      <el-dialog title="保存" v-model="createDialog" size="tiny">
-        <el-form ref="createFrom" :model="createForm" label-width="80px">
+      <!-- <el-dialog title="保存" v-model="createDialog" size="tiny">
+        <el-form ref="createFrom" :model="createForm" label-width="80px" label-position="left">
           <el-form-item label="姓名">
             <el-input v-model="createForm.name" class="el-col-24"></el-input>
           </el-form-item>
           <el-form-item label="出生日期">
             <el-date-picker class="el-col-24" type="datetime" placeholder="选择日期时间"
-              v-model="createForm.time">
+              v-model="createForm.time" style="width: 100%;">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="地址">
@@ -107,7 +109,7 @@
           <el-button @click="createDialog = false">取 消</el-button>
           <el-button type="primary" @click="handleSave()">确 定</el-button>
         </span>
-      </el-dialog>
+      </el-dialog> -->
       <!-- create dialog end -->
     </div>
   </div>
@@ -121,20 +123,18 @@ import {
   editUser
 } from './../../api/api';
 
-// import moment from 'moment';
-// import Vue from 'vue';
-
 export default {
   data() {
     return {
       users: [],
       total: 0,
-      page: 0,
+      pageNo: 1,
+      pageSize: 20,
       loading: true,
-      multipleSelection: [],
+      multipleSelection: [], // 多选
       reserveSelection: false,
       editDialog: false,
-      createDialog: false,
+      // createDialog: false,
       filters: {
         sortWay: '',
         userName: '',
@@ -145,12 +145,10 @@ export default {
       editForm: {
         id: '',
         name: '',
-        time: ''
-      },
-      createForm: {
-        name: '',
-        time: '',
-        address: ''
+        address: '',
+        age: '',
+        date: '',
+        modifydate: ''
       },
       selectedOptions: [{
         value: '1',
@@ -163,46 +161,67 @@ export default {
   },
 
   methods: {
+    // 格式化日期
     formatDate(row) {
       return new Date(row.date).toLocaleDateString();
     },
+    // 排序
     handleSortChange(sortWay) {
+      console.log(sortWay);
       this.filters.sortWay = {
         prop: sortWay.prop,
         order: sortWay.order
       };
-      this.fetchData();
+      // this.fetchData();
     },
-
-    handleEditSave() {
-      editUser(this.editForm).then(() => {
-        this.fetchData();
-        this.editDialog = false;
-
-        this.$message({
-          message: '编辑成功',
-          type: 'success'
-        });
-      });
-    },
-
+    // 新增/编辑
     handleSave() {
-      addUser(this.createForm).then(() => {
-        this.fetchData();
-        this.createDialog = false;
-
-        this.$message({
-          message: '保存成功',
-          type: 'success'
+      if (!this.editForm.id) {
+        addUser(this.editForm).then(() => {
+          this.fetchData();
+          // 隐藏表单
+          this.editDialog = false;
+          // 重置表单
+          this.$refs.editForm.resetFields();
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          });
         });
-      });
+      } else {
+        editUser(this.editForm).then(() => {
+          this.editDialog.modifydate = new Date();
+          this.fetchData();
+          this.editDialog = false;
+          this.$refs.editForm.resetFields();
+          this.$message({
+            message: '编辑成功',
+            type: 'success'
+          });
+        });
+      }
     },
-
-    handleEdit($index, row) {
-      this.editForm.id = row.id;
+    // 打开新增
+    handleCreate() {
+      // 重置表单
+      this.editForm.id = '';
+      this.editForm.name = '';
+      this.editForm.address = '';
+      this.editForm.age = '';
+      this.editForm.date = '';
+      // 显示dialog
       this.editDialog = true;
     },
-
+    // 打开编辑
+    handleEdit($index, row) {
+      this.editForm.id = row.id;
+      this.editForm.name = row.name;
+      this.editForm.address = row.address;
+      this.editForm.age = row.age;
+      this.editForm.date = row.date;
+      this.editDialog = true;
+    },
+    // 删除
     handleDelete($index, row) {
       this.$confirm('是否删除此条信息?', '提示', {
         confirmButtonText: '确定',
@@ -220,41 +239,44 @@ export default {
         });
       });
     },
-
+    // 多选
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-
+    // 搜索
     handleSearch() {
       this.fetchData();
     },
-
+    // 切换页码
     handleCurrentChange(val) {
-      this.fetchData(val);
+      this.pageNo = val;
+      this.fetchData();
     },
-
-    fetchData(page) {
+    // 切换每页显示数据条数
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.fetchData();
+    },
+    // 获取数据
+    fetchData() {
       // param: sort way
       const sortWay = this.filters.sortWay && this.filters.sortWay.prop ? this.filters.sortWay : '';
-
-      // param: page
-      this.page = page || this.page;
 
       // param: start time and end end time
       const startTime = this.filters.startEndTime ? this.filters.startEndTime[0].getTime() : '';
       const endTime = this.filters.startEndTime ? this.filters.startEndTime[1].getTime() : '';
       console.log('this.filters.labelVal', this.filters.labelVal);
       const options = {
-        page: this.page,
+        pageNo: this.pageNo,
+        pageSize: this.pageSize,
         userName: this.filters.labelVal === '2' ? this.filters.userName : null,
         startTime,
         endTime,
         sortWay,
         age: this.filters.labelVal === '1' ? parseInt(this.filters.age, 10) : null
       };
-//      console.log('[dashboard]:your post params');
-//      console.log(options);
-
+      console.log('[dashboard]:your post params');
+      console.log(options);
       this.loading = true;
       fetchList(options).then((res) => {
         // clear selection
@@ -274,7 +296,7 @@ export default {
 </script>
 
 <style lang="scss">
-#ListWithFiltersPage {
+.list-with-filter {
   .filters {
     margin: 0 0 20px 0;
     border: 1px #efefef solid;

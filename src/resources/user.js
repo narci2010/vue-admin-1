@@ -10,7 +10,7 @@ const LoginUsers = [
 ];
 
 const Users = [];
-const userCount = 200;
+const userCount = 1000;
 
 for (let i = 0; i < userCount; i++) {
   Users.push(Mock.mock({
@@ -18,7 +18,8 @@ for (let i = 0; i < userCount; i++) {
     name: Mock.Random.cname(),
     address: Mock.mock('@county(true)'),
     'age|18-60': 1,
-    date: Number(Mock.Random.datetime('T'))
+    date: Mock.Random.date('yyyy-MM-dd HH:mm:ss'),
+    modifydate: Mock.Random.now('day', 'yyyy-MM-dd HH:mm:ss')
   }));
 }
 
