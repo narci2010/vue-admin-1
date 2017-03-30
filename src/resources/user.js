@@ -1,10 +1,9 @@
 /* eslint-disable */
 import Mock from 'mockjs';
 const LoginUsers = [{
-  id: 1,
-  username: 'vvliebe',
-  password: '123456',
-  avatar: 'https://o0p2nwku4.qnssl.com/favicon.ico'
+  username: 'eason',
+  password: '123213',
+  avatar: 'http://q2.qlogo.cn/headimg_dl?dst_uin=261901051&spec=100'
 }];
 
 const Users = [];

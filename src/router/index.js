@@ -39,10 +39,11 @@ export default new Router({
       meta: {
         requiresAuth: true
       },
+      redirect: '/manage',
       children: [
         {
           path: 'form',
-          name: 'Form',
+          name: '认证',
           component: Form,
         },
         {

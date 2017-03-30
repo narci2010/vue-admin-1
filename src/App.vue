@@ -33,10 +33,10 @@
             <el-menu-item index="/chart">
               <i class="el-icon-picture"></i>图表
             </el-menu-item>
-            <el-submenu index="/manage">
+            <el-submenu index="/user">
               <template slot="title"><i class="el-icon-setting"></i>用户管理</template>
-              <el-menu-item index="/manage/detail">详情</el-menu-item>
-              <el-menu-item index="/manage">列表</el-menu-item>
+              <el-menu-item index="/user/admin">管理员</el-menu-item>
+              <el-menu-item index="/user/member">会员</el-menu-item>
             </el-submenu>
           </el-menu>
         </aside>
@@ -66,7 +66,7 @@ export default {
         name: '张大圣',
         avatar: require('./assets/avatar.jpg')
       },
-      activeMenu: ''
+      activeMenu: this.$route.path
     };
   }
 };

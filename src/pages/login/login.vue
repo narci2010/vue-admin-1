@@ -34,7 +34,8 @@
 </template>
 
 <script>
-// import { requestLogin } from '../../api/api';
+import { requestLogin } from '../../api/api';
+
 export default {
   data() {
     return {
@@ -60,11 +61,22 @@ export default {
         this.$message.error('请填写密码');
         return;
       }
+      const loginParams = { username: this.username, password: this.password };
       this.isBtnLoading = true;
-      setTimeout(() => {
+      requestLogin(loginParams).then((data) => {
         this.isBtnLoading = false;
-        this.$router.push({ path: '/' });
-      }, 500);
+        const { msg, code, user } = data;
+        if (code !== 200) {
+          this.$message.error(msg);
+        } else {
+          localStorage.setItem('user', JSON.stringify(user));
+          if (this.$route.query.redirect) {
+            this.$router.push({ path: this.$route.query.redirect });
+          } else {
+            this.$router.push({ path: '/list' });
+          }
+        }
+      });
     }
   }
 };

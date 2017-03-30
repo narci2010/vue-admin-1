@@ -47,6 +47,8 @@ module.exports = {
     'no-useless-return': 0,
     // console.log
     'no-console': 0,
+    // alert提示框
+    'no-alert': 0,
     // const let
     // 'prefer-const': 0,
     // es6变量简写语法
