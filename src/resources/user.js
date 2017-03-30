@@ -1,13 +1,11 @@
 /* eslint-disable */
 import Mock from 'mockjs';
-const LoginUsers = [
-  {
-    id: 1,
-    username: 'vvliebe',
-    password: '123456',
-    avatar: 'https://o0p2nwku4.qnssl.com/favicon.ico'
-  }
-];
+const LoginUsers = [{
+  id: 1,
+  username: 'vvliebe',
+  password: '123456',
+  avatar: 'https://o0p2nwku4.qnssl.com/favicon.ico'
+}];
 
 const Users = [];
 const userCount = 1000;
@@ -18,8 +16,15 @@ for (let i = 0; i < userCount; i++) {
     name: Mock.Random.cname(),
     address: Mock.mock('@county(true)'),
     'age|18-60': 1,
+    'sex|1': [{
+      'name': 'male',
+      'value': '男'
+    }, {
+      'name': 'female',
+      'value': '女'
+    }],
     // date: Mock.Random.date('yyyy-MM-dd HH:mm:ss'),
-    date: Number(Mock.Random.datetime('T')),
+    date: Number(Mock.Random.date('T')),
     modifydate: Number(new Date().getTime())
   }));
 }

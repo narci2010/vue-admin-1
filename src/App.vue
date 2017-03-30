@@ -83,7 +83,7 @@ export default {
     top: 0;
     width: 100%;
     height: 60px;
-    z-index: 99;
+    z-index: 1001;
     padding: 13px 20px;
     box-sizing: border-box;
     background: #20A0FF;

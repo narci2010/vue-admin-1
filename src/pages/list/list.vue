@@ -10,16 +10,23 @@
       <!-- filters start -->
       <div class="filters">
         <div class="filter">
-          <el-select v-model="filters.labelVal" clearable placeholder="请选择">
+          <el-input placeholder="请输入姓名" v-model="filters.userName"></el-input>
+        </div>
+        <div class="filter">
+          <el-input placeholder="请输入年龄" v-model="filters.age"></el-input>
+        </div>
+        <div class="filter">
+          <el-select v-model="filters.sex" clearable placeholder="请选择性别">
             <el-option
-                v-for="item in selectedOptions"
-                :label="item.label"
-                :value="item.value"
-                :key="item.value">
+                v-for="item in sexOptions"
+                :label="item.value"
+                :value="item.name"
+                :key="item.name">
             </el-option>
           </el-select>
-          <el-input placeholder="请输入年龄" v-model="filters.age" v-show="filters.labelVal == '1'"></el-input>
-          <el-input placeholder="请输入姓名" v-model="filters.userName" v-show="filters.labelVal == '2'"></el-input>
+        </div>
+        <div class="filter">
+          <el-input placeholder="请输入地址" v-model="filters.address"></el-input>
         </div>
         <div class="filter">
           起止时间：
@@ -39,6 +46,7 @@
         <el-table-column type="selection" width="55" :reserve-selection="reserveSelection"></el-table-column>
         <el-table-column label="姓名" prop="name" width="100"></el-table-column>
         <el-table-column label="年龄" prop="age" sortable="custom" width="100"></el-table-column>
+        <el-table-column label="性别" prop="sex.value"></el-table-column>
         <el-table-column label="地址" prop="address" min-width="200"></el-table-column>
         <el-table-column label="出生日期" prop="date" :formatter="formatDate" width="180"></el-table-column>
         <el-table-column label="修改时间" prop="modifydate" :formatter="formatDateTime" min-width="120"></el-table-column>
@@ -114,11 +122,12 @@ export default {
       reserveSelection: false,
       editDialog: false,
       filters: {
-        sortWay: '',
         userName: '',
+        age: '',
+        sex: '',
+        address: '',
         startEndTime: '',
-        labelVal: '1',
-        age: ''
+        sortWay: '',
       },
       editForm: {
         id: '',
@@ -128,12 +137,12 @@ export default {
         date: '',
         modifydate: ''
       },
-      selectedOptions: [{
-        value: '1',
-        label: '年龄'
+      sexOptions: [{
+        name: 'male',
+        value: '男'
       }, {
-        value: '2',
-        label: '姓名'
+        name: 'female',
+        value: '女'
       }]
     };
   },
@@ -152,7 +161,7 @@ export default {
         prop: sortWay.prop,
         order: sortWay.order
       };
-      // this.fetchData();
+      this.fetchData();
     },
     // 重置表单
     resetForm() {
@@ -228,6 +237,8 @@ export default {
     },
     // 搜索
     handleSearch() {
+      // 重置页码
+      this.pageNo = 1;
       this.fetchData();
     },
     // 切换页码
@@ -242,21 +253,21 @@ export default {
     },
     // 获取数据
     fetchData() {
-      // param: sort way
-      const sortWay = this.filters.sortWay && this.filters.sortWay.prop ? this.filters.sortWay : '';
-
       // param: start time and end end time
       const startTime = this.filters.startEndTime ? this.filters.startEndTime[0].getTime() : '';
       const endTime = this.filters.startEndTime ? this.filters.startEndTime[1].getTime() : '';
-      console.log('this.filters.labelVal', this.filters.labelVal);
+      // param: sort way
+      const sortWay = this.filters.sortWay && this.filters.sortWay.prop ? this.filters.sortWay : '';
       const options = {
         pageNo: this.pageNo,
         pageSize: this.pageSize,
-        userName: this.filters.labelVal === '2' ? this.filters.userName : null,
+        userName: this.filters.userName,
+        sex: this.filters.sex,
+        age: this.filters.age,
+        address: this.filters.address,
         startTime,
         endTime,
-        sortWay,
-        age: this.filters.labelVal === '1' ? parseInt(this.filters.age, 10) : null
+        sortWay
       };
       console.log('[dashboard]:your post params');
       console.log(options);
@@ -265,13 +276,15 @@ export default {
         // clear selection
         this.$refs.table.clearSelection();
         // lazy render data
-        this.users = res.data.users;
-        this.total = res.data.total;
+        this.users = res.data.obj.content;
+        this.pageNo = res.data.obj.number + 1;
+        this.pageSize = res.data.obj.size;
+        this.total = res.data.obj.totalElements;
         this.loading = false;
       });
     }
   },
-
+  // 新创建的$el挂载到实例
   mounted() {
     this.fetchData();
   }
