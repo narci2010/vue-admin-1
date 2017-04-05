@@ -89,6 +89,8 @@ export default {
         }, Math.random() * 200 + 50);
       });
     });
+    // 不拦截真实请求 
+    mock.onAny().passThrough();
   }
 };
 /* eslint-disable */

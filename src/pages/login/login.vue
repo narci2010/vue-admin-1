@@ -34,7 +34,11 @@
 </template>
 
 <script>
-import { requestLogin } from '../../api/api';
+// import { requestLogin } from '../../api/api';
+import axios from 'axios';
+import qs from 'qs';
+
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 export default {
   data() {
@@ -61,22 +65,40 @@ export default {
         this.$message.error('请填写密码');
         return;
       }
-      const loginParams = { username: this.username, password: this.password };
-      this.isBtnLoading = true;
-      requestLogin(loginParams).then((data) => {
+      const loginParams = { loginName: this.username, loginPwd: this.password };
+      console.log(qs.stringify(loginParams));
+      // Optionally the request above could also be done as
+      const url = 'http://localhost:8080/jmore-serve/api/profile/login';
+      // axios.post(`${url}?${qs.stringify(loginParams)}`, {})
+      axios.post(url, qs.stringify(loginParams))
+      .then((response) => {
+        console.log(response);
         this.isBtnLoading = false;
-        const { msg, code, user } = data;
-        if (code !== 200) {
-          this.$message.error(msg);
-        } else {
-          localStorage.setItem('user', JSON.stringify(user));
-          if (this.$route.query.redirect) {
-            this.$router.push({ path: this.$route.query.redirect });
-          } else {
-            this.$router.push({ path: '/list' });
-          }
-        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
+
+      // const loginParams = new URLSearchParams();
+      // loginParams.append('loginName', this.username);
+      // loginParams.append('loginPwd', this.password);
+      this.isBtnLoading = true;
+      // requestLogin(loginParams).then((data) => {
+      //   console.log(data);
+      //   this.isBtnLoading = false;
+      //   this.$message.error('哇，这波请求很伤');
+        // const { msg, code, user } = data;
+        // if (code !== 200) {
+        //   this.$message.error(msg);
+        // } else {
+        //   localStorage.setItem('user', JSON.stringify(user));
+        //   if (this.$route.query.redirect) {
+        //     this.$router.push({ path: this.$route.query.redirect });
+        //   } else {
+        //     this.$router.push({ path: '/list' });
+        //   }
+        // }
+      // });
     }
   }
 };

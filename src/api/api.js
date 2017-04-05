@@ -1,6 +1,8 @@
 import axios from 'axios';
+// import qs from 'qs';
 
 const base = '';
+const url = 'http://localhost:8080/jmore-serve/api/profile/login';
 
 export const fetchList = params => axios.get(`${base}/user/list`, params);
 
@@ -12,7 +14,8 @@ export const removeUser = params => axios.post(`${base}/user/remove`, params);
 
 export const postError = params => axios.get(`${base}/error`, { params });
 
-export const requestLogin = params => axios.post(`${base}/login`, params).then(res => res.data);
+// export const requestLogin = params => axios.post(`${base}/api/profile/login`, params).then(res => res.data);
+export const requestLogin = params => axios.get(`${url}`, params).then(res => res.data);
 
 export const fetchSchoolList = () => axios.get(`${base}/schools`).then(res => res.data);
 
