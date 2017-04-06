@@ -34,11 +34,9 @@
 </template>
 
 <script>
-// import { requestLogin } from '../../api/api';
-import axios from 'axios';
-import qs from 'qs';
-
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+import { requestLogin } from '../../api/api';
+// import axios from 'axios';
+// import qs from 'qs';
 
 export default {
   data() {
@@ -66,11 +64,8 @@ export default {
         return;
       }
       const loginParams = { loginName: this.username, loginPwd: this.password };
-      console.log(qs.stringify(loginParams));
-      // Optionally the request above could also be done as
-      const url = 'http://localhost:8080/jmore-serve/api/profile/login';
-      // axios.post(`${url}?${qs.stringify(loginParams)}`, {})
-      axios.post(url, qs.stringify(loginParams))
+
+      requestLogin(loginParams)
       .then((response) => {
         console.log(response);
         this.isBtnLoading = false;
@@ -78,6 +73,22 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+      // Optionally the request above could also be done as
+      // const url = 'http://localhost:8080/jmore-serve/api/profile/login';
+      // axios.post(`${url}?${qs.stringify(loginParams)}`, {})
+      // axios({
+      //   method: 'post',
+      //   url: '/api/profile/login',
+      //   baseURL: 'http://localhost:8080/jmore-serve',
+      //   params: { loginName: '123', loginPwd: '123' }
+      // })
+      // .then((response) => {
+      //   console.log(response);
+      //   this.isBtnLoading = false;
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      // });
 
       // const loginParams = new URLSearchParams();
       // loginParams.append('loginName', this.username);
