@@ -1,13 +1,7 @@
 /* eslint-disable */ 
 import axios from 'axios';
-import qs from 'qs';
-import { hex_hmac_sha256 } from './HmacSHA256Utils.js';
 
 const CancelToken = axios.CancelToken;
-
-// export default axios.create({
-//   baseURL: 'http://127.0.0.1:8080/jmore-serve'
-// });
 
 export default axios.create({
 
@@ -24,8 +18,6 @@ export default axios.create({
   // The last function in the array must return a string, an ArrayBuffer, FormData, or a Stream
   transformRequest: [function (data) {
     // Do whatever you want to transform the data
-    console.log('[transformRequest]');
-    console.log(data);
     return data;
   }],
 
@@ -33,7 +25,6 @@ export default axios.create({
   // it is passed to then/catch
   transformResponse: [function (data) {
     // Do whatever you want to transform the data
-    console.log('[transformResponse]');
     return data;
   }],
 
@@ -53,10 +44,10 @@ export default axios.create({
     // // 1.引入
     // // HmacSHA256Utils.hex_hmac_sha256(params)
     // // 根据this中的参数来判断是否执行encrypt方法
-    // console.log(this);
-    const encrypted = encrypt(params);
-    console.log(encrypted);
-    return qs.stringify(params, {arrayFormat: 'brackets'});
+    console.log(params);
+    // const encrypted = encrypt(params);
+    // return qs.stringify(params, {arrayFormat: 'brackets'});
+    return params;
   },
 
   // `data` is the data to be sent as the request body
@@ -134,14 +125,14 @@ export default axios.create({
   // 'proxy' defines the hostname and port of the proxy server
   // `auth` indicates that HTTP Basic auth should be used to connect to the proxy, and supplies credentials.
   // This will set an `Proxy-Authorization` header, overwriting any existing `Proxy-Authorization` custom headers you have set using `headers`.
-  proxy: {
-    // host: '127.0.0.1',
-    // port: 9000,
-    // auth: {
-    //   username: 'mikeymike',
-    //   password: 'rapunz3l'
-    // }
-  },
+  // proxy: {
+  //   host: '127.0.0.1',
+  //   port: 9000,
+  //   auth: {
+  //     username: 'mikeymike',
+  //     password: 'rapunz3l'
+  //   }
+  // },
 
   // `cancelToken` specifies a cancel token that can be used to cancel the request
   // (see Cancellation section below for details)
@@ -149,135 +140,4 @@ export default axios.create({
   })
 });
 
-/**
- * jquery2.extend
- * 实现对对象的复制
- */
-function extend() {
-  var options, name, src, copy, copyIsArray, clone,
-    target = arguments[0] || {},
-    i = 1,
-    length = arguments.length,
-    deep = false;
-
-  if (typeof target === "boolean") {
-    deep = target;
-
-    target = arguments[i] || {};
-    i++;
-  }
-
-  if (typeof target !== "object" && !$.isFunction(target)) {
-    target = {};
-  }
-
-  if (i === length) {
-    target = this;
-    i--;
-  }
-
-  for (; i < length; i++) {
-    if ((options = arguments[i]) != null) {
-      for (name in options) {
-        src = target[name];
-        copy = options[name];
-
-        if (target === copy) {
-          continue;
-        }
-
-        if (deep && copy && ($.isPlainObject(copy) || (copyIsArray = $.isArray(copy)))) {
-          if (copyIsArray) {
-            copyIsArray = false;
-            clone = src && $.isArray(src) ? src : [];
-
-          } else {
-            clone = src && $.isPlainObject(src) ? src : {};
-          }
-
-          target[name] = $.extend(deep, clone, copy);
-
-        } else if (copy !== undefined) {
-          target[name] = copy;
-        }
-      }
-    }
-  }
-
-  return target;
-};
-
-/**
- * 参数加密
- */
-function encrypt(params) {
-  // clone对象避免更改params
-  var tmp = {};
-  extend(tmp, params || {});
-  var state = getState();
-  var token = state.token;
-  var secret = state.secret;
-  var sequence = getTimeStamp().toString();
-  var key = secret + '-' + sequence;
-  // 将token,secret,sequence设置到参数中
-  tmp.sequence = sequence;
-  tmp.token = token;
-  // 生成摘要设置到参数中
-  tmp.digest = digest(key, tmp);
-  return tmp;
-}
-
-/**
- * 根据密钥和参数对象生成摘要
- */
-function digest(encryptKey, params) {
-  // 参数按照key排序
-  var sortedkeys = Object.keys(params).sort();
-  // 根据key拼接value
-  var content = '';
-  for (var i = 0; i < sortedkeys.length; i++) {
-    var key = sortedkeys[i];
-    content += params[key];
-  }
-
-  // 生成摘要并返回
-  return hex_hmac_sha256(encryptKey, content);
-};
-
-/**
- * 获取当前用户状态
- */
-function getState() {
-  // var stateText = wx.getStorageSync('$state') || "{}";
-  var stateText = sessionStorage.getItem('$state') || '{}'; 
-  return JSON.parse(stateText);
-};
-
-/**
- * 设置当前用户状态
- */
-function setState(state) {
-  state = state || {};
-  sessionStorage.setItem('$state', JSON.stringify(state));
-  // wx.setStorageSync('$state', JSON.stringify(state));
-};
-
-/**
- * 新建当前用户状态
- */
-function createState(token, secret, userId, mobile) {
-  var state = getState();
-  state.token = token;
-  state.secret = secret;
-  state.userId = userId;
-  state.mobile = mobile;
-  setState(state);
-}
-
-/**
- * 获取时间戳
- */
-function getTimeStamp() {
-  return new Date().getTime();
-}
-/* eslint-disable */
+/* eslint-disable */ 

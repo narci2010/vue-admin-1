@@ -51,6 +51,8 @@ module.exports = {
     'no-alert': 0,
     // 行长度超过100
     'max-len': 0,
+    // 条件判断变量和常量位置
+    'yoda': 0,
     // const let
     // 'prefer-const': 0,
     // es6变量简写语法

@@ -111,7 +111,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .el-form {
   width: 600px;
   .line {
