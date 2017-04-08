@@ -13,15 +13,19 @@ export default function (url, pars, options) {
   // 参数对象转querystring
   const params = qs.stringify(tmp, { arrayFormat: 'brackets' });
   return instance.request('/api/profile/login', { params, method })
-  .then((response) => {
-    // 判断status是1还是0，为1则return response的data回去
-    // 为0则读取状态码进行处理
+  .then((response) => { // 请求发送成功
     console.log(response);
-    // return response.data;
-    throw new Error('test');
-    // 这里new一个新的promise，使得后续的then对接的是此promise的then?
-  })
-  .catch((error) => {
-    console.log(error);
+    const res = response.data;
+    if (res.result === 1) { // 请求处理成功，直接返回数据到下一个then处理
+      return res;
+    }
+    // 请求处理失败，根据错误码做进一步处理
+    switch (res.errorcode) {
+      case 'INVALID': // 请求不合法，无权限
+        // TODO 跳转到登录页面
+        throw new Error('请求不合法');
+      default:
+        throw new Error(res.desc);
+    }
   });
 }

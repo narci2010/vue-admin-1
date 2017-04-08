@@ -54,53 +54,22 @@ export default {
         loginName: this.username,
         loginPwd: this.password
       };
-
+      this.isBtnLoading = true;
       requestLogin(loginParams)
       .then((response) => {
-        console.log(response);
         createState(response.obj.token, response.obj.secret, response.obj.userId, response.obj.mobile);
         this.isBtnLoading = false;
+        // 注：路由信息对象$route中query表示url查询参数，redirect为自定义参数用来存储跳转路
+        if (this.$route.query.redirect) {
+          this.$router.push({ path: this.$route.query.redirect });
+        } else {
+          this.$router.push({ path: '/' });
+        }
       })
       .catch((error) => {
-        console.log(error);
+        this.$message.error(error.message);
+        this.isBtnLoading = false;
       });
-      // Optionally the request above could also be done as
-      // const url = 'http://localhost:8080/jmore-serve/api/profile/login';
-      // axios.post(`${url}?${qs.stringify(loginParams)}`, {})
-      // axios({
-      //   method: 'post',
-      //   url: '/api/profile/login',
-      //   baseURL: 'http://localhost:8080/jmore-serve',
-      //   params: { loginName: '123', loginPwd: '123' }
-      // })
-      // .then((response) => {
-      //   console.log(response);
-      //   this.isBtnLoading = false;
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      // });
-
-      // const loginParams = new URLSearchParams();
-      // loginParams.append('loginName', this.username);
-      // loginParams.append('loginPwd', this.password);
-      this.isBtnLoading = true;
-      // requestLogin(loginParams).then((data) => {
-      //   console.log(data);
-      //   this.isBtnLoading = false;
-      //   this.$message.error('哇，这波请求很伤');
-      // const { msg, code, user } = data;
-      // if (code !== 200) {
-      //   this.$message.error(msg);
-      // } else {
-      //   localStorage.setItem('user', JSON.stringify(user));
-      //   if (this.$route.query.redirect) {
-      //     this.$router.push({ path: this.$route.query.redirect });
-      //   } else {
-      //     this.$router.push({ path: '/list' });
-      //   }
-      // }
-      // });
     }
   }
 };
